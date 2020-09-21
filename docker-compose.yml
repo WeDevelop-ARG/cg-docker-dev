@@ -1,0 +1,62 @@
+version: '3.7'
+
+services:
+  # ---------------------------------------------------------------------------#
+  # POSTGRES FOR BACKEND
+  # ---------------------------------------------------------------------------#
+  cg-db:
+    container_name: cg-db
+    image: postgres:11-alpine
+    environment:
+      - POSTGRES_DB=backend
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PAGER=less
+      - LESS=-S
+
+  # ---------------------------------------------------------------------------#
+  # BACKEND
+  # ---------------------------------------------------------------------------#
+  cg-backend:
+    container_name: cg-backend
+    build:
+      context: ../cg-backend
+      dockerfile: Dockerfile
+    ports:
+      - "3001:3001"
+    depends_on:
+      - cg-db
+    working_dir:
+      "/usr/src/app"
+    volumes:
+      - '../cg-backend:/usr/src/app'
+      - "/usr/src/app/node_modules"
+    environment:
+      # Database conection
+      - PORT=3001
+      - DB_NAME=backend
+      - DB_USER=postgres
+      - DB_PASSWORD=postgres
+      - DB_HOST=cg-db
+      # Mercado Pago
+      - ACCESS_TOKEN=TEST-1975651894202504-021815-0e6f3e6fafe6eb28bd68353c5fce8824-528302578
+      - USER_POOL_ID=us-east-1_OkSTj3mq4
+      - CLIENT_ID=5dsigl69f487rhrifrsi21p0ph
+    command: ['npm', 'run', 'dev:smart:with-migrations']
+
+  # ---------------------------------------------------------------------------#
+  # FRONTEND
+  # ---------------------------------------------------------------------------#
+  cg-frontend:
+    container_name: cg-frontend
+    build:
+      context: ../cg-frontend
+      dockerfile: Dockerfile
+    volumes:
+      - '../cg-frontend:/usr/src/app'
+      - '/usr/src/app/node_modules'
+    ports:
+      - 3000:3000
+    depends_on:
+      - cg-backend
+    command: ['npm', 'run', 'dev:smart']
