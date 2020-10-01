@@ -57,6 +57,10 @@ services:
       - '/usr/src/app/node_modules'
     ports:
       - 3000:3000
+      - 3003:3003
+    environment:
+      - HOT_MODULE_RELOADING_PORT=3003
+      - WEB_SERVER_PORT=3000
     depends_on:
       - cg-backend
     command: ['npm', 'run', 'dev:smart']
