@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3.3'
 
 services:
   # ---------------------------------------------------------------------------#
@@ -38,6 +38,7 @@ services:
       - DB_USER=postgres
       - DB_PASSWORD=postgres
       - DB_HOST=cg-db
+      - DB_DIALECT=postgres
       # Mercado Pago
       - ACCESS_TOKEN=TEST-1975651894202504-021815-0e6f3e6fafe6eb28bd68353c5fce8824-528302578
       - USER_POOL_ID=us-east-1_OkSTj3mq4
